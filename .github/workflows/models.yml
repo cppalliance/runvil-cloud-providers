@@ -36,8 +36,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Clone runvil
-        run: git clone --branch master --depth 1 https://github.com/cppalliance/runvil
+      - name: Clone runvil-gateway
+        run: git clone --branch master --depth 1 https://github.com/cppalliance/runvil-gateway runvil
 
       - name: Set up Rust toolchain
         uses: dtolnay/rust-toolchain@stable
