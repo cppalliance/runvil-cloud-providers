@@ -36,19 +36,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Clone runvil-gateway
-        run: git clone --branch master --depth 1 https://github.com/cppalliance/runvil-gateway runvil
+      - name: Check out this repository
+        uses: actions/checkout@v4
 
       - name: Set up Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
       - name: Cache cargo build
         uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: runvil
 
       - name: Build sheet binary
-        working-directory: runvil
         run: cargo build --release --locked -p gateway-cloud-providers
 
       # On the runner no profile-dir secrets file exists, so the binary
@@ -61,7 +58,7 @@ jobs:
         run: |
           set -euo pipefail
           sheet="$RUNNER_TEMP/cloud-provider-models.json"
-          runvil/target/release/shared-cloud-providers "$sheet"
+          target/release/shared-cloud-providers "$sheet"
           echo "SHEET=$sheet" >> "$GITHUB_ENV"
 
       # Gate: no provider key value may appear in the published sheet.
