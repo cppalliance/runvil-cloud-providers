@@ -1,0 +1,10 @@
+{
+  "pin_format": 1,
+  "kind": "sheet-schema",
+  "pins": "the sheet's schema, not the sheet",
+  "repository": "cppalliance/runvil-gateway",
+  "commit": "7d53cc67ea3e9c20270691312a2987ad6c1a05f2",
+  "path": "crates/gateway-api-types/sheet.schema.json",
+  "sha256": "a24bdc025d40d35ce62ba7d2d25d4d648821e2b0f71090f073067aa0f6c02d74",
+  "schema_version": 1
+}

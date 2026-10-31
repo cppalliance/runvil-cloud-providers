@@ -1,1 +1,7 @@
 *.swp
+/target
+*.env
+# A secrets file an operator drops in the tree must never be tracked. The
+# binary reads `~/.runvil/cloud-provider-secrets.env`, and this is the
+# same-shaped file left where a run would pick it up.
+/secrets.env

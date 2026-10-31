@@ -1,0 +1,36 @@
+[package]
+name = "gateway-cloud-providers"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+name = "gateway_cloud_providers"
+path = "src/lib.rs"
+
+[[bin]]
+name = "shared-cloud-providers"
+path = "src/main.rs"
+
+[dependencies]
+dotenvy.workspace = true
+futures-util.workspace = true
+hmac.workspace = true
+jsonschema.workspace = true
+reqwest.workspace = true
+schemars.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+time = { workspace = true, features = ["parsing", "serde-human-readable"] }
+tokio.workspace = true
+
+[build-dependencies]
+build-ceiling.workspace = true
+
+[lints]
+workspace = true

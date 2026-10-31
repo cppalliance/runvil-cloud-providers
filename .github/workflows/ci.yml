@@ -1,0 +1,60 @@
+name: CI
+
+# Test, lint, format, and cross-check the sheet schema of the crate that
+# builds `cloud-provider-models.json`.
+#
+# The schema cross-check is the point of the whole arrangement: this
+# repository derives the sheet schema from its own copy of the sheet types,
+# and the Gateway derives one from its copy. The two `$defs` objects must
+# agree, because the sheet published from here is the sheet a shipped
+# Gateway parses.
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Daily, so a Gateway-side schema change surfaces here within a day
+    # even when this repository is quiet.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      # No `rust-toolchain.toml` lives here on purpose: this repository has
+      # one crate and no architecture tooling, so the channel is stated once,
+      # here, at the release every local verification ran on.
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: "1.99"
+          components: rustfmt, clippy
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+
+      - name: Test
+        run: cargo test --locked --workspace
+
+      # The workspace lints table denies clippy's `all` and `pedantic`
+      # groups, so any diagnostic fails this step.
+      - name: Clippy
+        run: cargo clippy --locked --workspace --all-targets --all-features
+
+      - name: Format
+        run: cargo fmt --all --check
+
+      # Compares `$defs` only: the two wrappers may differ in `title` and
+      # key order, and the definitions are what a reader sees.
+      - name: Cross-check the sheet schema
+        run: bash schema/cross-check.sh
